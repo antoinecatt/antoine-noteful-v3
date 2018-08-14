@@ -4,7 +4,6 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const { PORT, MONGODB_URI } = require('./config');
-const { Note } = require('./models/note')
 
 const notesRouter = require('./routes/notes');
 
@@ -62,11 +61,5 @@ mongoose.connect(MONGODB_URI)
     console.error('\n === Did you remember to start `mongod`? === \n');
     console.error(err);
   });
-
-app.listen(PORT, function () {
-  console.info(`Server listening on ${this.address().port}`);
-}).on('error', err => {
-  console.error(err);
-});
 
 module.exports = app; // Export for testing

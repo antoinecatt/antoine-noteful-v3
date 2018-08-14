@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const { Note } = require('../models/note');
+const Note = require('../models/note');
 const router = express.Router();
 
 /* ========== GET/READ ALL ITEMS ========== */
