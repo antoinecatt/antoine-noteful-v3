@@ -5,7 +5,12 @@ const noteSchema = new mongoose.Schema({
   content: String,
   folderId: {
     type: mongoose.Schema.Types.ObjectId, ref: 'Folder'
-  }
+  },
+  tags: [
+    {
+      type: mongoose.Schema.Types.ObjectId, ref: 'Tag'
+    }
+  ]
 });
 
 noteSchema.set('timestamps', true);
@@ -15,7 +20,7 @@ noteSchema.methods.serialize = function() {
     id: this._id,
     title: this.title,
     content: this.content
-  }
-}
+  };
+};
 
 module.exports = mongoose.model('Note', noteSchema);
