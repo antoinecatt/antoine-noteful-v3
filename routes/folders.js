@@ -2,6 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Folder = require('../models/folder');
 const router = express.Router();
+const passport = require('passport');
+
+// Protect endpoints using JWT Strategy
+router.use('/', passport.authenticate('jwt', { session: false, failWithError: true}));
 
 router.get('/', (req, res, next) => {
   Folder.find()
