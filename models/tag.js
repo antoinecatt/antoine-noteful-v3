@@ -4,9 +4,11 @@ const tagSchema = new mongoose.Schema({
   name: {
     type: String,
     require: true,
-    unique: true
-  }
+  },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
+
+tagSchema.index({ name: 1, userId: 1}, { unique: true });
 
 tagSchema.set('timestamps', true);
 
