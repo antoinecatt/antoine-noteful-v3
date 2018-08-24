@@ -53,10 +53,11 @@ describe('Noteful API - Folders', function () {
   });
 
   describe('GET /api/folders', function () {
+    
 
     it('should return a list sorted with the correct number of folders', function () {
       return Promise.all([
-        Folder.find().sort('name'),
+        Folder.find({userId: user.id}).sort('name'),
         chai.request(app).get('/api/folders')
           .set('Authorization', `Bearer ${token}`)
       ])
@@ -64,13 +65,13 @@ describe('Noteful API - Folders', function () {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.a('array');
-          // expect(res.body).to.have.length(data.length);
+          expect(res.body).to.have.length(data.length);
         });
     });
 
     it('should return a list sorted by name with the correct fields and values', function () {
       return Promise.all([
-        Folder.find().sort('name'),
+        Folder.find({userId: user.id}).sort('name'),
         chai.request(app).get('/api/folders')
           .set('Authorization', `Bearer ${token}`)
       ])
@@ -78,10 +79,10 @@ describe('Noteful API - Folders', function () {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.a('array');
-          // expect(res.body).to.have.length(data.length);
+          expect(res.body).to.have.length(data.length);
           res.body.forEach(function (item, i) {
             expect(item).to.be.a('object');
-            expect(item).to.have.all.keys('id', 'name', 'createdAt', 'updatedAt');
+            expect(item).to.have.all.keys('id', 'name', 'createdAt', 'updatedAt', 'userId');
             expect(item.id).to.equal(data[i].id);
             expect(item.name).to.equal(data[i].name);
             expect(new Date(item.createdAt)).to.eql(data[i].createdAt);
@@ -118,7 +119,7 @@ describe('Noteful API - Folders', function () {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.an('object');
-          expect(res.body).to.have.all.keys('id', 'name', 'createdAt', 'updatedAt');
+          expect(res.body).to.have.all.keys('id', 'name', 'createdAt', 'updatedAt', 'userId');
           expect(res.body.id).to.equal(data.id);
           expect(res.body.name).to.equal(data.name);
           expect(new Date(res.body.createdAt)).to.eql(data.createdAt);
@@ -181,7 +182,7 @@ describe('Noteful API - Folders', function () {
           expect(res).to.have.header('location');
           expect(res).to.be.json;
           expect(body).to.be.a('object');
-          expect(body).to.have.all.keys('id', 'name', 'createdAt', 'updatedAt');
+          expect(body).to.have.all.keys('id', 'name', 'createdAt', 'updatedAt', 'userId');
           return Folder.findById(body.id);
         })
         .then(data => {
@@ -272,7 +273,7 @@ describe('Noteful API - Folders', function () {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
-          expect(res.body).to.have.all.keys('id', 'name', 'createdAt', 'updatedAt');
+          expect(res.body).to.have.all.keys('id', 'name', 'createdAt', 'updatedAt','userId');
           expect(res.body.id).to.equal(data.id);
           expect(res.body.name).to.equal(updateItem.name);
           expect(new Date(res.body.createdAt)).to.eql(data.createdAt);
