@@ -1,33 +1,33 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+'use strict';
 
-const userSchema = new mongoose.Schema({
-  fullname: {
-    type: String
-  },
-  username: {
-    type: String, required: true, unique: true
-  },
-  password: {
-    type: String, require: true
+const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+
+// ===== Define UserSchema & UserModel =====
+const schema = new mongoose.Schema({
+  fullname: { type: String, default: '' },
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true }
+});
+
+// Transform output during `res.json(data)`, `console.log(data)` etc.
+schema.set('toObject', {
+  virtuals: true,
+  transform: (doc, result) => {
+    delete result._id;
+    delete result.__v;
+    delete result.password;
   }
 });
 
-userSchema.set('toObject', {
-  virtuals: true,     // include built-in virtual `id`
-  versionKey: false,  // remove `__v` version key
-  transform: (doc, ret) => {
-    delete ret._id; // delete `_id`
-    delete ret.password;
-  }
-}); 
-
-userSchema.methods.validatePassword = function(password) {
-  return bcrypt.compare(password, this.password);
+// Note: Use `function` (not an `arrow function`) to allow setting `this`
+schema.methods.validatePassword = function (pwd) {
+  const currentUser = this;
+  return bcrypt.compare(pwd, currentUser.password);
 };
 
-userSchema.statics.hashPassword = function(password) {
-  return bcrypt.hash(password,10);
+schema.statics.hashPassword = function (pwd) {
+  return bcrypt.hash(pwd, 10);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', schema);

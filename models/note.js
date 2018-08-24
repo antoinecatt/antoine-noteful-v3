@@ -1,26 +1,25 @@
+'use strict';
+
 const mongoose = require('mongoose');
 
-const noteSchema = new mongoose.Schema({
-  title: {type: String, required: true},
+const schema = new mongoose.Schema({
+  title: { type: String, required: true },
   content: String,
-  folderId: {type: mongoose.Schema.Types.ObjectId, ref: 'Folder'},
-  tags: [{type: mongoose.Schema.Types.ObjectId, ref: 'Tag'}],
-  userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true}
+  folderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Folder' },
+  tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
-noteSchema.index({ title: 1, userId: 1 }, { unique: true });
+// Add `createdAt` and `updatedAt` fields
+schema.set('timestamps', true);
 
-noteSchema.set('timestamps', true);
+// Transform output during `res.json(data)`, `console.log(data)` etc.
+schema.set('toObject', {
+  virtuals: true,
+  transform: (doc, result) => {
+    delete result._id;
+    delete result.__v;
+  }
+});
 
-noteSchema.methods.serialize = function() {
-  return {
-    id: this._id,
-    title: this.title,
-    content: this.content,
-    folderId: this.folderId,
-    tags: this.tags,
-    userId: this.userId
-  };
-};
-
-module.exports = mongoose.model('Note', noteSchema);
+module.exports = mongoose.model('Note', schema);
